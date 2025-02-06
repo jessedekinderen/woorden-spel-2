@@ -1,25 +1,37 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
+    background-color: #f4f4f4;
 }
 
 button {
     font-size: 1.2em;
     padding: 10px;
-    margin: 5px;
+    margin: 10px;
+    cursor: pointer;
+}
+
+#timer {
+    font-size: 2em;
+    color: red;
+    margin: 20px;
 }
 
 #word {
     font-size: 2em;
     margin: 20px;
+    font-weight: bold;
 }
 
-#timer {
-    font-size: 1.5em;
-    color: red;
+ul {
+    list-style: none;
+    padding: 0;
 }
 
-.team {
-    margin: 10px;
+li {
     font-size: 1.2em;
+    margin: 5px 0;
+    background: #ddd;
+    padding: 10px;
+    border-radius: 5px;
 }
