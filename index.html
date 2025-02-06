@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 Seconds Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #setup, #game { display: none; }
+        .team { margin: 10px; font-size: 1.2em; }
+        #word { font-size: 2em; margin: 20px; }
+        #timer { font-size: 1.5em; color: red; }
+        button { font-size: 1.2em; padding: 10px; margin: 5px; }
+    </style>
+</head>
+<body>
+
+    <h1>30 Seconds Game</h1>
+
+    <!-- Setup-scherm -->
+    <div id="setup">
+        <h2>Voer teams in</h2>
+        <input type="text" id="teamName" placeholder="Teamnaam">
+        <button onclick="addTeam()">Team toevoegen</button>
+        <h3>Teams:</h3>
+        <ul id="teamList"></ul>
+
+        <h2>Kies de scorelimiet</h2>
+        <input type="number" id="scoreLimit" min="1" value="10">
+        <button onclick="startGame()">Start spel</button>
+    </div>
+
+    <!-- Spelscherm -->
+    <div id="game">
+        <h2>Huidig team: <span id="currentTeam"></span></h2>
+        <div id="word">Klik op 'Nieuw woord' om te beginnen</div>
+        <div id="timer">30</div>
+        <button onclick="newWord()">Nieuw woord</button>
+        <button onclick="startTimer()">Start timer</button>
+
+        <h2>Scorebord</h2>
+        <div id="scoreboard"></div>
+
+        <h3>Hoeveel woorden geraden?</h3>
+        <input type="number" id="pointsScored" min="0" value="0">
+        <button onclick="addPoints()">Punten toevoegen</button>
+    </div>
+
+    <script>
+        let words = ["Auto", "Zon", "Telefoon", "Banaan", "Gitaar"]; // Voeg meer woorden toe
+        let teams = [];
+        let scores = {};
+        let currentTeamIndex = 0;
+        let winningScore = 10;
+        let timeLeft = 30;
+        let timer;
+
+        // Voeg team toe aan lijst
+        function addTeam() {
+            let teamInput = document.getElementById("teamName").value;
+            if (teamInput && !teams.includes(teamInput)) {
+                teams.push(teamInput);
+                scores[teamInput] = 0;
+                document.getElementById("teamList").innerHTML += `<li>${teamInput}</li>`;
+                document.getElementById("teamName").value = "";
+            }
+        }
+
+        // Start spel
+        function startGame() {
+            if (teams.length < 2) {
+                alert("Voeg minimaal 2 teams toe!");
+                return;
+            }
+            winningScore = parseInt(document.getElementById("scoreLimit").value);
+            document.getElementById("setup").style.display = "none";
+            document.getElementById("game").style.display = "block";
+            updateScoreboard();
+            nextTeam();
+        }
+
+        // Toon nieuw woord
+        function newWord() {
+            let randomIndex = Math.floor(Math.random() * words.length);
+            document.getElementById("word").innerText = words[randomIndex];
+        }
+
+        // Start de timer
+        function startTimer() {
+            clearInterval(timer);
+            timeLeft = 30;
+            document.getElementById("timer").innerText = timeLeft;
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = timeLeft;
+                if (timeLeft === 0) clearInterval(timer);
+            }, 1000);
+        }
+
+        // Punten toevoegen en volgende team kiezen
+        function addPoints() {
+            let points = parseInt(document.getElementById("pointsScored").value);
+            let currentTeam = teams[currentTeamIndex];
+            scores[currentTeam] += points;
+
+            // Controleer of een team gewonnen heeft
+            if (scores[currentTeam] >= winningScore) {
+                alert(`${currentTeam} heeft gewonnen!`);
+                location.reload(); // Herlaad de pagina voor een nieuw spel
+                return;
+            }
+
+            updateScoreboard();
+            nextTeam();
+        }
+
+        // Update het scorebord
+        function updateScoreboard() {
+            let scoreboardHTML = "";
+            teams.forEach(team => {
+                scoreboardHTML += `<div class="team">${team}: ${scores[team]} punten</div>`;
+            });
+            document.getElementById("scoreboard").innerHTML = scoreboardHTML;
+        }
+
+        // Wissel naar het volgende team
+        function nextTeam() {
+            currentTeamIndex = (currentTeamIndex + 1) % teams.length;
+            document.getElementById("currentTeam").innerText = teams[currentTeamIndex];
+        }
+    </script>
+
+</body>
+</html>
