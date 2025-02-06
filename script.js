@@ -1,84 +1,105 @@
-let words = [];
-fetch("words.json")
-    .then(response => response.json())
-    .then(data => words = data)
-    .catch(error => console.error("Fout bij laden woorden:", error));
+document.addEventListener("DOMContentLoaded", () => {
+    let teams = [];
+    let scores = {};
+    let currentTeamIndex = 0;
+    let totalTime = 45;
+    let timeLeft = totalTime;
+    let wordsGuessed = 0;
+    let timer;
+    let winningScore = 15; // Standaard op snel spel
 
-let teams = [];
-let scores = {};
-let currentTeamIndex = 0;
-let timeLeft = 15;
-let maxTime = 45;
-let timer;
-let wordsGuessed = 0;
+    fetch("words.json")
+        .then(response => response.json())
+        .then(data => words = data);
 
-function showTeamSetup() {
-    document.getElementById("intro").style.display = "none";
-    document.getElementById("setup").style.display = "block";
-}
+    document.getElementById("startGame").addEventListener("click", showTeamSetup);
+    document.getElementById("addTeam").addEventListener("click", addTeam);
+    document.getElementById("beginGame").addEventListener("click", startGame);
+    document.getElementById("correctNext").addEventListener("click", correctWord);
 
-function addTeam() {
-    let teamInput = document.getElementById("teamName").value;
-    if (teamInput && !teams.includes(teamInput)) {
-        teams.push(teamInput);
-        scores[teamInput] = 0;
-        document.getElementById("teamList").innerHTML += `<li>${teamInput}</li>`;
-        document.getElementById("teamName").value = "";
+    function showTeamSetup() {
+        document.getElementById("intro").style.display = "none";
+        document.getElementById("setup").style.display = "block";
     }
-}
 
-function startGame() {
-    if (teams.length < 2) {
-        alert("Voeg minimaal 2 teams toe!");
-        return;
-    }
-    document.getElementById("setup").style.display = "none";
-    document.getElementById("game").style.display = "block";
-    document.getElementById("currentTeam").innerText = teams[currentTeamIndex];
-}
-
-function newWord() {
-    document.getElementById("word").innerText = words[Math.floor(Math.random() * words.length)];
-    startTimer();
-}
-
-function startTimer() {
-    clearInterval(timer);
-    timeLeft = 15;
-    wordsGuessed = 0;
-    updateTimer();
-    timer = setInterval(() => {
-        timeLeft--;
-        updateTimer();
-        if (timeLeft <= 0 || timeLeft >= maxTime) {
-            endRound();
+    function addTeam() {
+        let teamInput = document.getElementById("teamName").value;
+        if (teamInput && !teams.includes(teamInput)) {
+            teams.push(teamInput);
+            scores[teamInput] = 0;
+            document.getElementById("teamList").innerHTML += `<li>${teamInput}</li>`;
+            document.getElementById("teamName").value = "";
         }
-    }, 1000);
-}
+    }
 
-function correctWord() {
-    wordsGuessed++;
-    timeLeft = Math.min(timeLeft + 5, maxTime);
-    document.getElementById("word").innerText = words[Math.floor(Math.random() * words.length)];
-    updateTimer();
-}
+    function startGame() {
+        if (teams.length < 2) {
+            alert("Voeg minimaal 2 teams toe!");
+            return;
+        }
+        document.getElementById("setup").style.display = "none";
+        document.getElementById("game").style.display = "block";
+        setWinningScore();
+        nextTeam();
+    }
 
-function updateTimer() {
-    document.getElementById("timer").innerText = timeLeft;
-}
+    function setWinningScore() {
+        let selectedScore = document.querySelector('input[name="scoreOption"]:checked').value;
+        winningScore = parseInt(selectedScore);
+    }
 
-function endRound() {
-    clearInterval(timer);
-    scores[teams[currentTeamIndex]] += wordsGuessed;
-    document.getElementById("game").style.display = "none";
-    document.getElementById("results").style.display = "block";
-    document.getElementById("finalScore").innerText = wordsGuessed;
-}
+    function startRound() {
+        wordsGuessed = 0;
+        timeLeft = totalTime;
+        document.getElementById("wordCount").innerText = wordsGuessed;
+        document.getElementById("timer").innerText = timeLeft;
+        document.getElementById("startRound").style.display = "none";
+        document.getElementById("correctNext").style.display = "block";
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById("timer").innerText = timeLeft;
+            if (timeLeft <= 0) endRound();
+        }, 1000);
+        newWord();
+    }
 
-function nextTeam() {
-    currentTeamIndex = (currentTeamIndex + 1) % teams.length;
-    document.getElementById("results").style.display = "none";
-    document.getElementById("game").style.display = "block";
-    document.getElementById("currentTeam").innerText = teams[currentTeamIndex];
-    document.getElementById("word").innerText = "Klik op 'Start' om te beginnen";
-}
+    function newWord() {
+        let randomIndex = Math.floor(Math.random() * words.length);
+        document.getElementById("word").innerText = words[randomIndex];
+    }
+
+    function correctWord() {
+        wordsGuessed++;
+        document.getElementById("wordCount").innerText = wordsGuessed;
+        if (timeLeft + 5 <= totalTime) {
+            timeLeft += 5;
+        } else {
+            timeLeft = totalTime;
+        }
+        newWord();
+    }
+
+    function endRound() {
+        clearInterval(timer);
+        let currentTeam = teams[currentTeamIndex];
+        scores[currentTeam] += wordsGuessed;
+        document.getElementById("roundResult").innerText = `${currentTeam} behaalde ${wordsGuessed} punten! Totaal: ${scores[currentTeam]} punten.`;
+        document.getElementById("correctNext").style.display = "none";
+        document.getElementById("startRound").style.display = "block";
+        nextTeam();
+    }
+
+    function nextTeam() {
+        currentTeamIndex = (currentTeamIndex + 1) % teams.length;
+        if (currentTeamIndex === 0) showScoreboard();
+        document.getElementById("currentTeam").innerText = teams[currentTeamIndex];
+    }
+
+    function showScoreboard() {
+        let scoreboardHTML = "";
+        teams.forEach(team => {
+            scoreboardHTML += `<div>${team}: ${scores[team]} punten</div>`;
+        });
+        document.getElementById("scoreboard").innerHTML = scoreboardHTML;
+    }
+});
