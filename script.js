@@ -1,18 +1,22 @@
 let words = [];
-
-fetch("words.json") // Haalt woorden op uit het JSON-bestand
-    .then(response => response.json()) 
+fetch("words.json")
+    .then(response => response.json())
     .then(data => words = data)
-    .catch(error => console.error("Fout bij het laden van woorden:", error));
+    .catch(error => console.error("Fout bij laden woorden:", error));
 
 let teams = [];
 let scores = {};
 let currentTeamIndex = 0;
-let winningScore = 10;
-let timeLeft = 30;
+let timeLeft = 15;
+let maxTime = 45;
 let timer;
+let wordsGuessed = 0;
 
-// Voeg team toe
+function showTeamSetup() {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("setup").style.display = "block";
+}
+
 function addTeam() {
     let teamInput = document.getElementById("teamName").value;
     if (teamInput && !teams.includes(teamInput)) {
@@ -23,64 +27,58 @@ function addTeam() {
     }
 }
 
-// Start het spel
 function startGame() {
     if (teams.length < 2) {
         alert("Voeg minimaal 2 teams toe!");
         return;
     }
-    winningScore = parseInt(document.getElementById("scoreLimit").value);
     document.getElementById("setup").style.display = "none";
     document.getElementById("game").style.display = "block";
-    updateScoreboard();
-    nextTeam();
+    document.getElementById("currentTeam").innerText = teams[currentTeamIndex];
 }
 
-// Nieuw woord kiezen
 function newWord() {
-    let randomIndex = Math.floor(Math.random() * words.length);
-    document.getElementById("word").innerText = words[randomIndex];
+    document.getElementById("word").innerText = words[Math.floor(Math.random() * words.length)];
+    startTimer();
 }
 
-// Start de timer
 function startTimer() {
     clearInterval(timer);
-    timeLeft = 30;
-    document.getElementById("timer").innerText = timeLeft;
+    timeLeft = 15;
+    wordsGuessed = 0;
+    updateTimer();
     timer = setInterval(() => {
         timeLeft--;
-        document.getElementById("timer").innerText = timeLeft;
-        if (timeLeft === 0) clearInterval(timer);
+        updateTimer();
+        if (timeLeft <= 0 || timeLeft >= maxTime) {
+            endRound();
+        }
     }, 1000);
 }
 
-// Punten toevoegen
-function addPoints() {
-    let points = parseInt(document.getElementById("pointsScored").value);
-    let currentTeam = teams[currentTeamIndex];
-    scores[currentTeam] += points;
-
-    if (scores[currentTeam] >= winningScore) {
-        alert(`${currentTeam} heeft gewonnen!`);
-        location.reload();
-        return;
-    }
-
-    updateScoreboard();
-    nextTeam();
+function correctWord() {
+    wordsGuessed++;
+    timeLeft = Math.min(timeLeft + 5, maxTime);
+    document.getElementById("word").innerText = words[Math.floor(Math.random() * words.length)];
+    updateTimer();
 }
 
-// Update scoreboard
-function updateScoreboard() {
-    let scoreboardHTML = "";
-    teams.forEach(team => {
-        scoreboardHTML += `<div class="team">${team}: ${scores[team]} punten</div>`;
-    });
-    document.getElementById("scoreboard").innerHTML = scoreboardHTML;
+function updateTimer() {
+    document.getElementById("timer").innerText = timeLeft;
 }
 
-// Wissel team
+function endRound() {
+    clearInterval(timer);
+    scores[teams[currentTeamIndex]] += wordsGuessed;
+    document.getElementById("game").style.display = "none";
+    document.getElementById("results").style.display = "block";
+    document.getElementById("finalScore").innerText = wordsGuessed;
+}
+
 function nextTeam() {
     currentTeamIndex = (currentTeamIndex + 1) % teams.length;
+    document.getElementById("results").style.display = "none";
+    document.getElementById("game").style.display = "block";
     document.getElementById("currentTeam").innerText = teams[currentTeamIndex];
+    document.getElementById("word").innerText = "Klik op 'Start' om te beginnen";
 }
