@@ -8,35 +8,32 @@
 </head>
 <body>
 
-    <h1>30 Seconds Game</h1>
+    <div id="intro">
+        <h1>30 Seconds Game</h1>
+        <button onclick="showTeamSetup()">Start spel</button>
+    </div>
 
-    <!-- Setup-scherm -->
-    <div id="setup">
+    <div id="setup" style="display: none;">
         <h2>Voer teams in</h2>
         <input type="text" id="teamName" placeholder="Teamnaam">
         <button onclick="addTeam()">Team toevoegen</button>
         <h3>Teams:</h3>
         <ul id="teamList"></ul>
-
-        <h2>Kies de scorelimiet</h2>
-        <input type="number" id="scoreLimit" min="1" value="10">
         <button onclick="startGame()">Start spel</button>
     </div>
 
-    <!-- Spelscherm -->
     <div id="game" style="display: none;">
         <h2>Huidig team: <span id="currentTeam"></span></h2>
-        <div id="word">Klik op 'Nieuw woord' om te beginnen</div>
-        <div id="timer">30</div>
-        <button onclick="newWord()">Nieuw woord</button>
-        <button onclick="startTimer()">Start timer</button>
+        <div id="timer">15</div>
+        <div id="word">Klik op 'Start' om te beginnen</div>
+        <button onclick="newWord()">Start</button>
+        <button onclick="correctWord()">Correct, volgende</button>
+    </div>
 
-        <h2>Scorebord</h2>
-        <div id="scoreboard"></div>
-
-        <h3>Hoeveel woorden geraden?</h3>
-        <input type="number" id="pointsScored" min="0" value="0">
-        <button onclick="addPoints()">Punten toevoegen</button>
+    <div id="results" style="display: none;">
+        <h2>Einde ronde!</h2>
+        <p><span id="finalScore"></span> woorden geraden</p>
+        <button onclick="nextTeam()">Volgend team</button>
     </div>
 
     <script src="script.js"></script>
