@@ -1,0 +1,25 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+button {
+    font-size: 1.2em;
+    padding: 10px;
+    margin: 5px;
+}
+
+#word {
+    font-size: 2em;
+    margin: 20px;
+}
+
+#timer {
+    font-size: 1.5em;
+    color: red;
+}
+
+.team {
+    margin: 10px;
+    font-size: 1.2em;
+}
