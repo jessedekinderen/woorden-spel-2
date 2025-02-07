@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let teams = [];
     let scores = {};
     let currentTeamIndex = 0;
-    let totalGameTime = 45; // Maximale tijd per ronde
+    let totalGameTime = 45; // Maximale speeltijd per ronde
     let roundTime = 15; // Starttijd per ronde
     let correctAnswers = 0;
     let timer;
@@ -96,9 +96,10 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function correctWord() {
-        if (roundTime < 45) {
-            roundTime += 5;
+        if (correctAnswers < 6 && roundTime + 5 <= totalGameTime) { 
+            roundTime += 5; // Alleen bij de eerste 6 correcte antwoorden extra tijd geven
         }
+        
         correctAnswers++;
         document.getElementById("roundScore").innerText = correctAnswers;
         newWord();
