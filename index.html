@@ -10,44 +10,37 @@
 
     <div id="intro">
         <h1>30 Seconds Game</h1>
-        <button id="startGame">Start spel</button>
+        <button id="startGameBtn">Start spel</button>
     </div>
 
     <div id="setup" style="display: none;">
         <h2>Voer teams in</h2>
         <input type="text" id="teamName" placeholder="Teamnaam">
-        <button id="addTeam">Team toevoegen</button>
+        <button id="addTeamBtn">Team toevoegen</button>
         <h3>Teams:</h3>
         <ul id="teamList"></ul>
-        <button onclick="startGame()">Start spel</button>
+        <button id="beginGameBtn">Start spel</button>
     </div>
 
     <div id="game" style="display: none;">
         <h2>Huidig team: <span id="currentTeam"></span></h2>
-        <div id="progressContainer">
-            <div id="progressBar"></div>
+        
+        <div id="progress-bar-container">
+            <div id="progress-bar"></div>
         </div>
+
         <div id="timer">15</div>
         <div id="word">Klik op 'Start' om te beginnen</div>
-        <button id="startRoundBtn">Start</button>
+        <button id="newWordBtn">Start</button>
         <button id="correctWordBtn" style="display: none;">Correct, volgende</button>
         
-        <h3>Geraden woorden</h3>
-        <div id="wordBoxes">
-            <span class="wordBox" id="wordBox1"></span>
-            <span class="wordBox" id="wordBox2"></span>
-            <span class="wordBox" id="wordBox3"></span>
-            <span class="wordBox" id="wordBox4"></span>
-            <span class="wordBox" id="wordBox5"></span>
-            <span class="wordBox" id="wordBox6"></span>
-        </div>
-        <p>Aantal goed: <span id="wordCounter">0</span></p>
+        <p>Woorden geraden deze ronde: <span id="roundScore">0</span></p>
     </div>
 
     <div id="results" style="display: none;">
         <h2>Einde ronde!</h2>
         <p><span id="finalScore"></span> woorden geraden</p>
-        <p>Totale score: <span id="totalScore"></span></p>
+        <p>Totaal punten: <span id="totalScore"></span></p>
         <button id="nextTeamBtn">Volgend team</button>
     </div>
 
