@@ -1,24 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("script.js geladen!");
-
     let teams = [];
     let scores = {};
     let currentTeamIndex = 0;
     let winningScore = 15;
-    let timeLeft = 15;
+    let roundTime = 15;
+    let maxTime = 45;
+    let timeLeft = roundTime;
+    let progressTimeLeft = maxTime;
     let timer;
+    let progressTimer;
     let wordsGuessed = 0;
-
-    // Woorden inladen vanuit words.json
     let words = [];
+
     fetch("words.json")
         .then(response => response.json())
         .then(data => words = data);
 
-    // Koppel knoppen aan functies
     document.getElementById("startGame").addEventListener("click", showTeamSetup);
     document.getElementById("addTeam").addEventListener("click", addTeam);
-    document.getElementById("startRound").addEventListener("click", startGame);
     document.getElementById("startRoundBtn").addEventListener("click", startRound);
     document.getElementById("correctWordBtn").addEventListener("click", correctWord);
     document.getElementById("nextTeamBtn").addEventListener("click", nextTeam);
@@ -43,7 +42,6 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Voeg minimaal 2 teams toe!");
             return;
         }
-        winningScore = parseInt(document.getElementById("scoreLimit").value);
         document.getElementById("setup").style.display = "none";
         document.getElementById("game").style.display = "block";
         nextTeam();
@@ -52,18 +50,27 @@ document.addEventListener("DOMContentLoaded", () => {
     function startRound() {
         document.getElementById("startRoundBtn").style.display = "none";
         document.getElementById("correctWordBtn").style.display = "inline-block";
-        timeLeft = 15;
+        timeLeft = roundTime;
+        progressTimeLeft = maxTime;
         wordsGuessed = 0;
         document.getElementById("wordCounter").innerText = wordsGuessed;
         document.getElementById("timer").innerText = timeLeft;
+        updateProgressBar();
+        resetWordBoxes();
 
         timer = setInterval(() => {
             timeLeft--;
             document.getElementById("timer").innerText = timeLeft;
             if (timeLeft <= 0) {
                 clearInterval(timer);
+                clearInterval(progressTimer);
                 endRound();
             }
+        }, 1000);
+
+        progressTimer = setInterval(() => {
+            progressTimeLeft--;
+            updateProgressBar();
         }, 1000);
 
         newWord();
@@ -75,16 +82,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function correctWord() {
-        wordsGuessed++;
-        document.getElementById("wordCounter").innerText = wordsGuessed;
-        if (timeLeft < 45) {
-            timeLeft += 5; // Voeg 5 seconden toe, maar max 45 sec
+        if (wordsGuessed < 6) {
+            wordsGuessed++;
+            document.getElementById("wordCounter").innerText = wordsGuessed;
+            document.getElementById("wordBox" + wordsGuessed).classList.add("filled");
+            timeLeft = Math.min(timeLeft + 5, maxTime);
         }
         newWord();
     }
 
     function endRound() {
         clearInterval(timer);
+        clearInterval(progressTimer);
         document.getElementById("game").style.display = "none";
         document.getElementById("results").style.display = "block";
 
@@ -98,16 +107,22 @@ document.addEventListener("DOMContentLoaded", () => {
     function nextTeam() {
         document.getElementById("results").style.display = "none";
         document.getElementById("game").style.display = "block";
-        
+
         currentTeamIndex = (currentTeamIndex + 1) % teams.length;
         document.getElementById("currentTeam").innerText = teams[currentTeamIndex];
 
-        if (Object.values(scores).some(score => score >= winningScore)) {
-            alert("Er is een winnaar!");
-            location.reload();
-        } else {
-            document.getElementById("startRoundBtn").style.display = "inline-block";
-            document.getElementById("correctWordBtn").style.display = "none";
+        document.getElementById("startRoundBtn").style.display = "inline-block";
+        document.getElementById("correctWordBtn").style.display = "none";
+    }
+
+    function updateProgressBar() {
+        let progress = (progressTimeLeft / maxTime) * 100;
+        document.getElementById("progressBar").style.width = progress + "%";
+    }
+
+    function resetWordBoxes() {
+        for (let i = 1; i <= 6; i++) {
+            document.getElementById("wordBox" + i).classList.remove("filled");
         }
     }
 });
