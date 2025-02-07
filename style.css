@@ -33,3 +33,23 @@ button {
     font-size: 2em;
     margin: 20px;
 }
+
+#scoreboard {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#scoreboard table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#scoreboard th, #scoreboard td {
+    border: 1px solid black;
+    padding: 10px;
+}
+
+#scoreboard th {
+    background-color: #f4f4f4;
+}
+
