@@ -117,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function nextTeam() {
-        // **Reset ALLES voor de volgende ronde bij klikken op 'Volgend team'**
+        // **Reset alle waardes direct bij klikken op 'Volgend team'**
         roundTime = 15;
         totalGameTime = 45;
         correctAnswers = 0;
@@ -126,6 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
         clearInterval(timer);
         clearInterval(progressTimer);
         
+        // **Zorg ervoor dat de timer, balk en score direct veranderen op het scherm**
         document.getElementById("timer").innerText = roundTime;
         document.getElementById("progress-bar").style.width = "100%";
         document.getElementById("roundScore").innerText = correctAnswers;
