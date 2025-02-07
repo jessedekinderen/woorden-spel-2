@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let totalGameTime = 45; // Maximale speeltijd per ronde
     let roundTime = 15; // Starttijd per ronde
     let correctAnswers = 0;
+    let extraTimeGiven = 0; // Houdt bij hoeveel keer extra tijd is gegeven
     let timer;
     let progressTimer;
 
@@ -51,10 +52,6 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("newWordBtn").style.display = "none";
         document.getElementById("correctWordBtn").style.display = "inline-block";
 
-        roundTime = 15;
-        correctAnswers = 0;
-        document.getElementById("roundScore").innerText = correctAnswers;
-
         startTimer();
         startProgressBar();
         newWord();
@@ -96,8 +93,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function correctWord() {
-        if (correctAnswers < 6 && roundTime + 5 <= totalGameTime) { 
-            roundTime += 5; // Alleen bij de eerste 6 correcte antwoorden extra tijd geven
+        if (correctAnswers < 6 && extraTimeGiven < 6) { 
+            roundTime = Math.min(roundTime + 5, totalGameTime); // Extra tijd, maar nooit boven de 45 sec
+            extraTimeGiven++; // Extra tijd tellen
         }
         
         correctAnswers++;
@@ -120,6 +118,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function nextTeam() {
         currentTeamIndex = (currentTeamIndex + 1) % teams.length;
+
+        // **Reset alles voor de volgende ronde**
+        roundTime = 15;
+        correctAnswers = 0;
+        extraTimeGiven = 0;
+        document.getElementById("timer").innerText = roundTime;
+        document.getElementById("progress-bar").style.width = "100%";
+        document.getElementById("roundScore").innerText = correctAnswers;
 
         document.getElementById("results").style.display = "none";
         document.getElementById("game").style.display = "block";
