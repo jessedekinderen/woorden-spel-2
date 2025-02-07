@@ -1,37 +1,38 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    background-color: #f4f4f4;
 }
 
 button {
     font-size: 1.2em;
     padding: 10px;
-    margin: 10px;
-    cursor: pointer;
+    margin: 5px;
 }
 
-#timer {
-    font-size: 2em;
-    color: red;
-    margin: 20px;
+#progressContainer {
+    width: 80%;
+    height: 20px;
+    background-color: lightgray;
+    margin: auto;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-#word {
-    font-size: 2em;
-    margin: 20px;
-    font-weight: bold;
+#progressBar {
+    height: 100%;
+    width: 100%;
+    background-color: red;
+    transition: width 1s linear;
 }
 
-ul {
-    list-style: none;
-    padding: 0;
+.wordBox {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 2px solid black;
+    margin: 5px;
 }
 
-li {
-    font-size: 1.2em;
-    margin: 5px 0;
-    background: #ddd;
-    padding: 10px;
-    border-radius: 5px;
+.wordBox.filled {
+    background-color: green;
 }
