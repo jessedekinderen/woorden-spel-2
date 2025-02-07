@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", function() {
     let extraTimeGiven = 0; // Houdt bij hoeveel keer extra tijd is gegeven
     let timer;
     let progressTimer;
-
+    let roundsPlayed = {}; // Houdt bij hoeveel rondes elk team heeft gespeeld
+    
     // Koppel knoppen aan functies
     document.getElementById("startGameBtn").addEventListener("click", showTeamSetup);
     document.getElementById("addTeamBtn").addEventListener("click", addTeam);
@@ -43,9 +44,18 @@ document.addEventListener("DOMContentLoaded", function() {
             alert("Voeg minimaal 2 teams toe!");
             return;
         }
-        document.getElementById("setup").style.display = "none";
-        document.getElementById("game").style.display = "block";
-        nextTeam();
+    
+        // Reset scoreboard info
+        teams.forEach(team => {
+            roundsPlayed[team] = 0;
+            scores[team] = 0;
+        });
+
+    document.getElementById("setup").style.display = "none";
+    document.getElementById("game").style.display = "block";
+    
+    updateScoreboard();
+    nextTeam();
     }
 
     function startRound() {
@@ -109,11 +119,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
         let currentTeam = teams[currentTeamIndex];
         scores[currentTeam] += correctAnswers;
+        roundsPlayed[currentTeam]++;
 
         document.getElementById("game").style.display = "none";
         document.getElementById("results").style.display = "block";
         document.getElementById("finalScore").innerText = correctAnswers;
         document.getElementById("totalScore").innerText = scores[currentTeam];
+
+        updateScoreboard(); // **Update live scoreboard**
     }
 
     function nextTeam() {
@@ -140,4 +153,21 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("newWordBtn").style.display = "inline-block";
         document.getElementById("correctWordBtn").style.display = "none";
     }
+
+    function updateScoreboard() {
+        let scoreboardHTML = "";
+    
+        teams.forEach(team => {
+            scoreboardHTML += `
+                <tr>
+                    <td>${team}</td>
+                    <td>${roundsPlayed[team]}</td>
+                    <td>${scores[team]}</td>
+                </tr>
+            `;
+        });
+    
+        document.getElementById("scoreboardBody").innerHTML = scoreboardHTML;
+    }
+    
 });
