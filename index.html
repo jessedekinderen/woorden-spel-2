@@ -19,25 +19,29 @@
         <button id="addTeam">Team toevoegen</button>
         <h3>Teams:</h3>
         <ul id="teamList"></ul>
-        
-        <h2>Kies scorelimiet</h2>
-        <select id="scoreLimit">
-            <option value="15">Snel spel (15 woorden)</option>
-            <option value="25">Normaal spel (25 woorden)</option>
-            <option value="35">Lang spel (35 woorden)</option>
-            <option value="50">Uitgebreid spel (50 woorden)</option>
-        </select>
-
-        <button id="startRound">Start spel</button>
+        <button onclick="startGame()">Start spel</button>
     </div>
 
     <div id="game" style="display: none;">
         <h2>Huidig team: <span id="currentTeam"></span></h2>
+        <div id="progressContainer">
+            <div id="progressBar"></div>
+        </div>
         <div id="timer">15</div>
         <div id="word">Klik op 'Start' om te beginnen</div>
-        <button id="startRoundBtn">Start ronde</button>
-        <button id="correctWordBtn" style="display:none;">Correct, volgende</button>
-        <p>Woorden correct: <span id="wordCounter">0</span></p>
+        <button id="startRoundBtn">Start</button>
+        <button id="correctWordBtn" style="display: none;">Correct, volgende</button>
+        
+        <h3>Geraden woorden</h3>
+        <div id="wordBoxes">
+            <span class="wordBox" id="wordBox1"></span>
+            <span class="wordBox" id="wordBox2"></span>
+            <span class="wordBox" id="wordBox3"></span>
+            <span class="wordBox" id="wordBox4"></span>
+            <span class="wordBox" id="wordBox5"></span>
+            <span class="wordBox" id="wordBox6"></span>
+        </div>
+        <p>Aantal goed: <span id="wordCounter">0</span></p>
     </div>
 
     <div id="results" style="display: none;">
