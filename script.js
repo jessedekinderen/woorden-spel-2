@@ -117,15 +117,20 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function nextTeam() {
-        currentTeamIndex = (currentTeamIndex + 1) % teams.length;
-
-        // **Reset alles voor de volgende ronde**
+        // **Reset ALLES voor de volgende ronde bij klikken op 'Volgend team'**
         roundTime = 15;
+        totalGameTime = 45;
         correctAnswers = 0;
         extraTimeGiven = 0;
+        
+        clearInterval(timer);
+        clearInterval(progressTimer);
+        
         document.getElementById("timer").innerText = roundTime;
         document.getElementById("progress-bar").style.width = "100%";
         document.getElementById("roundScore").innerText = correctAnswers;
+
+        currentTeamIndex = (currentTeamIndex + 1) % teams.length;
 
         document.getElementById("results").style.display = "none";
         document.getElementById("game").style.display = "block";
