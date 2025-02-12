@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     document.getElementById("setup").style.display = "none";
     document.getElementById("game").style.display = "block";
-    document.getElementById("setup").style.display = "block";
+    document.getElementById("scoreboard").style.display = "block";
     updateScoreboard();
     nextTeam();
     }
